@@ -75,7 +75,6 @@ class Docx:
         self.text1_data['quant'] = important_data[0].split()[4].capitalize()
 
         
-        breakpoint()
         self.text2_data['title'] = self.get_data(page1_text, "Model Portfolio:", "ROIC")[0].strip()
         self.text2_data['percentage1'] = important_data[1].split()[3] #the percentage 1 value is in a sentence that's in the important_date array, so it's necessary to split the sentence and get the value.
         self.text2_data['percentage2'] = important_data[1].split()[8] + important_data[1].split()[9] #the same happens with percentage 2, the difference is where the value is in the sentence and that this value is formatted in another way (it's divided in two places in the sentence).

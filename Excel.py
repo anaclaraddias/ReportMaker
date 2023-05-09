@@ -5,10 +5,6 @@ from openpyxl.utils import column_index_from_string, get_column_letter
 
 class Excel:
     def init(self) -> None:
-        '''
-        Initiation of everything the class needs.
-        '''
-
         self.workbook = openpyxl.Workbook()
 
         self.featured_sheet = self.workbook.active
@@ -21,14 +17,23 @@ class Excel:
 
 
     def featured_stock_creation(self):
-        '''
-        Here the excel sheet is created with the infomartion.
-        '''
-
-        self.dropdown_creation(self.featured_sheet, ["Exec Comp Aligned with ROIC", "Safest Dividend Yield", "Dividend Growth", "Most Attractive/Most Dangerous"], "B2")
+        self.dropdown_creation(
+            self.featured_sheet, 
+            [
+                "Exec Comp Aligned with ROIC", 
+                "Safest Dividend Yield", 
+                "Dividend Growth", 
+                "Most Attractive/Most Dangerous"
+            ], 
+            "B2"
+        )
         
         self.featured_sheet["B3"] = "Year Fraction"
-        self.dropdown_creation(self.featured_sheet, ["0.25", "0.5", "0.75"], "C3")
+        self.dropdown_creation(
+            self.featured_sheet, 
+            ["0.25", "0.5", "0.75"], 
+            "C3"
+        )
 
         self.featured_sheet["B6"] = "Invested Capital Turns"
 
@@ -37,15 +42,11 @@ class Excel:
 
 
     def stock_file_manipulation(self):
-        '''
-        Here the formula nedeed in the stock file is made.
-        '''
-
         workbook = openpyxl.load_workbook('analysis/AZO.xlsx')
         sheet = workbook.active
 
 
-        #if AU3 value is equal to AV3 - but the AU3 and AV3 cell refers to anther cells so it's necessary to write in this way
+        # TODO: remove 'self.correction' when the current column at the sheet can be used
         if round(sheet[(sheet["AU3"].value)[1:]].value) == round(sheet[(sheet["AV3"].value)[1:]].value):
             self.column = "AU"
             self.correction = 0
@@ -55,11 +56,24 @@ class Excel:
             self.correction = 1
 
         
-        rows = ["Revenue 1Y", "Revenue 3Y", "Revenue 5Y", "Revenue 10Y", "Revenue 20Y", "NOPAT 1Y", "NOPAT 3Y", "NOPAT 5Y", "NOPAT 10Y", "NOPAT 20Y", "NMARGIN3Y", "NMARGIN5Y", "NMARGIN10Y"]
+        rows = [
+            "Revenue 1Y", 
+            "Revenue 3Y", 
+            "Revenue 5Y", 
+            "Revenue 10Y", 
+            "Revenue 20Y", 
+            "NOPAT 1Y", 
+            "NOPAT 3Y", 
+            "NOPAT 5Y", 
+            "NOPAT 10Y", 
+            "NOPAT 20Y", 
+            "NMARGIN3Y", 
+            "NMARGIN5Y", 
+            "NMARGIN10Y"
+        ]
         cell = 21
 
         for row in rows:
-            #writing in the cell before the one that's been used as reference.
             sheet[f"{get_column_letter(column_index_from_string(f'{self.column}') - 1)}{cell}"] = row
             
             cell += 1
@@ -112,10 +126,6 @@ class Excel:
 
 
     def stock_file_data(self):
-        '''
-        Here the important data of the stock file is taken.
-        '''
-
         sheet_name = input("Write the stock sheet name \n ->")
         workbook = openpyxl.load_workbook(f'analysis/{sheet_name}.xlsx')
         sheet = workbook.active
@@ -133,7 +143,7 @@ class Excel:
 
         data['current_percentage'] = round(float((sheet[(sheet[f"{get_column_letter(column_index_from_string(f'{self.column}')- 1)}8"].value)[1:]].value)) * 100)
 
-        nmargin_list = sheet[f"{get_column_letter(column_index_from_string(f'{self.column}')- (6 + self.correction))}8:{get_column_letter(column_index_from_string(f'{self.column}')- 1)}8"]
+        nmargin_list = sheet[f"{get_column_letter(column_index_from_string(f'{self.column}') - (6 + self.correction))}8:{get_column_letter(column_index_from_string(f'{self.column}')- 1)}8"]
         data['smaller_number'] = self.calculate_cells(nmargin_list, sheet, "smaller")
 
         data['smaller_number_year'] = self.calculate_cells(nmargin_list, sheet, "smaller_y", data['smaller_number'])
@@ -155,7 +165,7 @@ class Excel:
 
 
     def feature_stock_data(self, data):
-        sheet_name = input("Write the new stock sheet file \n ->")
+        sheet_name = input("Write the new sheet name \n ->")
         workbook = openpyxl.load_workbook(f'created/{sheet_name}.xlsx')
         sheet = workbook.active
 
@@ -179,10 +189,6 @@ class Excel:
 
 
     def calculate_cells(self, formula, sheet, type, add=None):
-        '''
-        Here the cells with formula are calculated (the library don't have a function for it).
-        '''
-
         if type == "div":
             formula = formula[1:].split(")")
 
@@ -219,10 +225,6 @@ class Excel:
 
 
     def reading_company_file(self):
-        '''
-        Here the ticker name of the company is taken.
-        '''
-
         workbook = openpyxl.load_workbook('analysis/AZO.xlsx')
         sheet = workbook.active
 
@@ -231,10 +233,6 @@ class Excel:
 
 
     def dropdown_creation(self, sheet, options, cell_range):
-        '''
-        Here a dropdown is created on the chosen page with the selected options inside the selected cell.
-        '''
-
         data_validation = DataValidation(type='list', formula1='"'+','.join(options)+'"')
 
         sheet.add_data_validation(data_validation)
@@ -243,8 +241,4 @@ class Excel:
 
 
     def save_project(self, name):
-        '''
-        Here the excel file is saved with the selected name.
-        '''
-
         self.workbook.save(f'created/{name}.xlsx')

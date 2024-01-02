@@ -10,4 +10,4 @@ python-docx==0.8.11
 pywin32==306
 requests==2.31.0
 soupsieve==2.4.1
-urllib3==1.26.15
+urllib3==1.26.18

@@ -5,7 +5,7 @@ et-xmlfile==1.1.0
 idna==3.4
 lxml==4.9.2
 openpyxl==3.1.2
-pypdf==3.9.0
+pypdf==3.17.0
 python-docx==0.8.11
 pywin32==306
 requests==2.31.0
